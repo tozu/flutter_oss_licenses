@@ -32,6 +32,7 @@ main(List<String> args) async {
     final generateJson = results['json'] || path.extension(outputFilePath).toLowerCase() == '.json';
     final deps = await oss.listDependencies(
       pubspecLockPath: path.join(projectRoot, 'pubspec.lock'),
+      pubspecYamlPath: path.join(projectRoot, 'pubspec.yaml'),
       ignore: results['ignore'],
     );
 

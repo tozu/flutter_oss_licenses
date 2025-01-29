@@ -32,6 +32,7 @@ String? guessPubCacheDir() {
 
 Future<AllProjectDependencies> listDependencies({
   required String pubspecLockPath,
+  required String pubspecYamlPath,
   List<String> ignore = const [],
 }) async {
   final pubCacheDir = guessPubCacheDir();
@@ -70,7 +71,13 @@ Future<AllProjectDependencies> listDependencies({
   );
   final processed = <String>{};
   await _createDependencies(
-      processed, projectDependencies, packagesByName, allDeps['direct main'], allDeps['direct dev'], null);
+    processed,
+    projectDependencies,
+    packagesByName,
+    allDeps['direct main'],
+    allDeps['direct dev'],
+    pubspecYamlPath,
+  );
   return projectDependencies;
 }
 
@@ -91,15 +98,29 @@ Future<void> _createDependencies(
 
   if (dependencies == null || devDependencies == null) {
     assert(pubspecYamlPath != null);
-    final pubspecLock = await File(pubspecYamlPath!).readAsString();
-    final pubspec = loadYaml(pubspecLock);
+    final pubspecYaml = await File(pubspecYamlPath!).readAsString();
+
+    final pubspec = loadYaml(pubspecYaml);
     final dep = pubspec['dependencies'];
-    dependencies ??=
-        dep is YamlMap ? dep.keys.map((e) => packagesByName[e]).where((p) => p != null).cast<Package>().toList() : [];
+    dependencies ??= dep is YamlMap
+        ? dep.keys
+            .map((e) => packagesByName[e])
+            .where(
+              (p) => p != null,
+            )
+            .cast<Package>()
+            .toList()
+        : [];
     if (projectDependencies is AllProjectDependencies) {
       final devDep = pubspec['dev_dependencies'];
       devDependencies ??= devDep is YamlMap
-          ? devDep.keys.map((e) => packagesByName[e]).where((p) => p != null).cast<Package>().toList()
+          ? devDep.keys
+              .map((e) => packagesByName[e])
+              .where(
+                (p) => p != null,
+              )
+              .cast<Package>()
+              .toList()
           : [];
     }
   }

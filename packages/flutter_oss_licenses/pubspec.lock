@@ -20,10 +20,9 @@ packages:
   dart_pubspec_licenses:
     dependency: "direct main"
     description:
-      name: dart_pubspec_licenses
-      sha256: "23ddb78ff9204d08e3109ced67cd3c6c6a066f581b0edf5ee092fc3e1127f4ea"
-      url: "https://pub.dev"
-    source: hosted
+      path: "../dart_pubspec_licenses"
+      relative: true
+    source: path
     version: "3.0.4"
   flutter_lints:
     dependency: "direct dev"
